@@ -1,28 +1,76 @@
-import { test } from "../modules/util.js";
+import { checkCurrent } from "../modules/util.js";
 
-console.log(test)
+let val = "X", cnt=0;
+let xo = {
+    "top": ["n", "n", "n"],
+    "mid": ["n", "n", "n"],
+    "bot": ["n", "n", "n"]
+};
 
+const boxXO = document.querySelectorAll(".grid__cnt");
+const toPlay = document.querySelectorAll(".pl__toplay__ic");
+const pl1Score = document.querySelector(".pl1__score");
+const pl2Score = document.querySelector(".pl2__score");
 
-// <!-- The core Firebase JS SDK is always required and must be listed first -->
-// <script src="https://www.gstatic.com/firebasejs/8.9.1/firebase-app.js"></script>
+function resetAll(){
+    val = "X";
+    cnt = 0;
+    xo = {
+        "top": ["n", "n", "n"],
+        "mid": ["n", "n", "n"],
+        "bot": ["n", "n", "n"]
+    };
+    resetGrid();
+}
 
-// <!-- TODO: Add SDKs for Firebase products that you want to use
-//      https://firebase.google.com/docs/web/setup#available-libraries -->
-// <script src="https://www.gstatic.com/firebasejs/8.9.1/firebase-analytics.js"></script>
+function resetGrid(){
+    boxXO.forEach(box => {
+        box.innerText = "";
+        box.classList.remove("grid__clicked");
+    });
+}
 
-// <script>
-//   // Your web app's Firebase configuration
-//   // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-//   var firebaseConfig = {
-//     apiKey: "AIzaSyD6KZ3tVToX8Kc8jwM5afTzQInjaH9DtBE",
-//     authDomain: "tic-tac-toe-44.firebaseapp.com",
-//     projectId: "tic-tac-toe-44",
-//     storageBucket: "tic-tac-toe-44.appspot.com",
-//     messagingSenderId: "39983334316",
-//     appId: "1:39983334316:web:d656e83ed26fb656cab009",
-//     measurementId: "G-R6V8RKEB7Q"
-//   };
-//   // Initialize Firebase
-//   firebase.initializeApp(firebaseConfig);
-//   firebase.analytics();
-// </script>
+function endGame(){
+    let toUpdate = val == "X"? pl1Score : pl2Score;
+    toUpdate.innerText = +toUpdate.innerText + 1;
+    resetAll();
+}
+
+function toggleToPlay(){
+    toPlay.forEach(play => {
+        play.classList.toggle("none");
+    });
+}
+
+function updateXO(pos, no){
+    xo[pos][no] = val; 
+    checkEach();
+}
+
+function checkEach(){
+    if(checkCurrent(xo, val)){
+        endGame();
+        return;
+    }
+    if(cnt==9){
+        resetAll();
+        return;
+    }
+    val = val == "X" ? "0" : "X";
+    toggleToPlay();
+}
+
+function displayXO(elem){
+    cnt++;
+    elem.classList.add("grid__clicked");
+    elem.innerText = val;
+    updateXO(elem.dataset.pos, elem.dataset.val);
+}
+
+boxXO.forEach(box => {
+    box.addEventListener("click", function(){
+        if(this.classList.contains("grid__clicked")) return;
+
+        displayXO(this);
+    });
+});

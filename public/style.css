@@ -1,0 +1,232 @@
+*, *::after, *::before{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root{
+    --bg-color: #202020;
+    --primary: #ffd100;
+    --secondary: #d6d6d6;
+}
+
+html{
+    background-color: var(--bg-color);
+    color: var(--primary);
+    font-size: 1.4rem;
+}
+
+body{
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    height: 100vh;
+}
+
+header{
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.login{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.login__btn{
+    padding: .2rem .8rem;
+    border: solid 2px var(--primary);
+    border-radius: 1rem;
+    background-color: transparent;
+    color: var(--secondary);
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all .5s ease;
+}
+
+.login__btn:hover{
+    background-color: var(--primary);
+    color: var(--bg-color);
+}
+
+.login__profile{
+    width: 36px;
+    height: 36px;
+    background-color: var(--secondary);
+    border-radius: 50%;
+    margin-bottom: .5rem;
+}
+
+.login__detail{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.activate{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    padding: 1rem 2rem;
+}
+
+.activate__create{
+    width: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    cursor: pointer;
+    border: 2px solid transparent;
+    padding: .5rem 1.3rem;
+    border-radius: 1rem;
+}
+
+.activate__create:hover{
+    border-color: var(--primary);
+    color: var(--secondary);
+}
+
+.activate__create:hover .activate__create__ic{
+   color: var(--primary);
+}
+
+.ic{
+    height: 30px;
+    width: 30px;
+    color: var(--secondary);
+
+}
+
+.activate__create__ic{
+    padding-right: .3rem;
+    color: var(--secondary);
+    box-sizing: unset;
+}
+
+.activate__or{
+    height: 30px;
+    margin: 0 .5rem;
+}
+
+.activate__or__ic{
+    transform: rotateZ(90deg);
+}
+
+.activate__join__input{
+    width: 200px;
+    background-color: transparent;
+    padding: .5rem 0;
+    margin: 0 0 0 1.3rem;
+    border: none;
+    color: var(--primary);
+    font-size: 1rem;
+    border: 2px solid transparent;
+    border-bottom: 2px solid var(--primary);
+    border-radius: 1rem;
+    text-align: center;
+    transition: border .5s ease;
+}
+
+.activate__join__input:focus{
+    outline: none;
+    border-color: var(--primary);
+    color: var(--secondary);
+}
+
+main{
+    padding: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex: 1;
+}
+
+.pl{
+    align-self: flex-start;
+    position: relative;
+}
+
+.grid{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.grid__cnt{
+    width: 150px;
+    height: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3rem;
+    border: 2px solid var(--secondary);
+    cursor: pointer;
+}
+
+.grid__cnt:hover{
+    background-color: var(--primary);
+    color: var(--bg-color);
+}
+
+.grid__clicked{
+    color: var(--primary);
+    cursor: default;
+}
+
+.grid__clicked:hover{
+    background-color: transparent;
+    color: var(--secondary);
+}
+
+.pl__data{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.pl__value{
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--secondary);
+}
+
+.pl__prof{
+    width: 50px;
+    height: 50px;
+    background-color: var(--primary);
+    border-radius: 50%;
+    margin: 0 .8rem;
+}
+
+.pl__score{
+    position: absolute;
+    font-size: 2rem;
+    top: 300%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.pl__toplay__ic{
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    bottom: 110%;
+}
+
+.pl1 .pl__toplay__ic{
+    right: calc(29.13px + 0.8rem);
+}
+
+.pl2 .pl__toplay__ic{
+    left: calc(31.3px + 0.8rem);
+}
+
+.none{
+    display: none;
+}

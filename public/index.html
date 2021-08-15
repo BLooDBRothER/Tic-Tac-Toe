@@ -1,14 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./style.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./style.css" />
     <title>Tic Tac Toe</title>
-</head>
-<body>
-    
+  </head>
+  <body>
+    <header>
+      <h1>Tic Tac Toe</h1>
+      <div class="login">
+        <button class="login__btn">Login</button>
+        <div class="login__detail none">
+          <img class="login__profile" src="" alt="Pro" />
+          <p class="login__name">UserName</p>
+        </div>
+      </div>
+    </header>
+
+    <div class="activate">
+      <div class="activate__create">
+        <svg
+          aria-hidden="true"
+          focusable="false"
+          data-prefix="far"
+          data-icon="plus-square"
+          class="svg-inline--fa fa-plus-square fa-w-14 ic activate__create__ic"
+          role="img"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 448 512"
+        >
+          <path
+            fill="currentColor"
+            d="M352 240v32c0 6.6-5.4 12-12 12h-88v88c0 6.6-5.4 12-12 12h-32c-6.6 0-12-5.4-12-12v-88h-88c-6.6 0-12-5.4-12-12v-32c0-6.6 5.4-12 12-12h88v-88c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v88h88c6.6 0 12 5.4 12 12zm96-160v352c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V80c0-26.5 21.5-48 48-48h352c26.5 0 48 21.5 48 48zm-48 346V86c0-3.3-2.7-6-6-6H54c-3.3 0-6 2.7-6 6v340c0 3.3 2.7 6 6 6h340c3.3 0 6-2.7 6-6z"
+          ></path>
+        </svg>
+        <div class="activate__create__text">Create room</div>
+      </div>
+      <div class="activate__id none">450398</div>
+      <div class="activate__or">
+        <svg
+          aria-hidden="true"
+          focusable="false"
+          data-prefix="fas"
+          data-icon="sort"
+          class="svg-inline--fa fa-sort fa-w-10 ic activate__or__ic"
+          role="img"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 320 512"
+        >
+          <path
+            fill="currentColor"
+            d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41zm255-105L177 64c-9.4-9.4-24.6-9.4-33.9 0L24 183c-15.1 15.1-4.4 41 17 41h238c21.4 0 32.1-25.9 17-41z"
+          ></path>
+        </svg>
+      </div>
+      <div class="activate__join">
+        <input
+          type="text"
+          class="activate__join__input"
+          placeholder="Room Code"
+        />
+      </div>
+    </div>
+
+    <main>
+      <section class="pl pl1">
+        <img src="./Assests/active.svg" alt="" class="pl__toplay__ic" />
+        <div class="pl__data">
+          <h2 class="pl__name pl1__name">Player 1</h2>
+          <img
+            class="pl__prof pl1__prof"
+            src="./abstract_pf4.jpg"
+            alt="p1-pf"
+          />
+          <div class="pl__value">X</div>
+          <div class="pl__score pl1__score">0</div>
+        </div>
+      </section>
+
+      <section class="grid">
+        <div class="grid__cnt grid__1" data-pos="top" data-val="0"></div>
+        <div class="grid__cnt grid__2" data-pos="top" data-val="1"></div>
+        <div class="grid__cnt grid__3" data-pos="top" data-val="2"></div>
+        <div class="grid__cnt grid__4" data-pos="mid" data-val="0"></div>
+        <div class="grid__cnt grid__5" data-pos="mid" data-val="1"></div>
+        <div class="grid__cnt grid__6" data-pos="mid" data-val="2"></div>
+        <div class="grid__cnt grid__7" data-pos="bot" data-val="0"></div>
+        <div class="grid__cnt grid__8" data-pos="bot" data-val="1"></div>
+        <div class="grid__cnt grid__9" data-pos="bot" data-val="2"></div>
+      </section>
+
+      <sections class="pl pl2">
+        <img src="./Assests/active.svg" alt="" class="pl__toplay__ic none" />
+        <div class="pl__data">
+          <div class="pl__value">O</div>
+          <img
+            class="pl__prof pl2__prof"
+            src="./abstract_pf4.jpg"
+            alt="p2-pf"
+          />
+          <h2 class="pl__name pl2__name">Player 2</h2>
+          <div class="pl__score pl2__score">0</div>
+        </div>
+      </sections>
+    </main>
+
     <!-- The core Firebase JS SDK is always required and must be listed first -->
     <script src="https://www.gstatic.com/firebasejs/8.9.1/firebase-app.js"></script>
 
@@ -16,5 +114,9 @@
         https://firebase.google.com/docs/web/setup#available-libraries -->
     <script src="https://www.gstatic.com/firebasejs/8.9.1/firebase-analytics.js"></script>
     <script type="module" src="./js/main.js"></script>
-</body>
+  </body>
 </html>
+
+<!-- <script src="https://www.gstatic.com/firebasejs/8.9.1/firebase-analytics.js"></script>
+  firebase.initializeApp(firebaseConfig);
+  firebase.analytics(); -->
