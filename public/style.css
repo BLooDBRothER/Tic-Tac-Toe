@@ -227,6 +227,21 @@ main{
     left: calc(31.3px + 0.8rem);
 }
 
+.glow{
+    animation: bgclr 1s ease;
+}
+
+@keyframes bgclr{
+    0%, 100%{
+        background-color: var(--primary);
+        color: var(--bg-color);
+    }
+    75%{
+        background-color: var(--secondary);
+        color: var(--bg-color);
+    }
+}
+
 .none{
     display: none;
 }

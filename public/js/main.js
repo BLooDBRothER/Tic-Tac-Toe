@@ -7,10 +7,23 @@ let xo = {
     "bot": ["n", "n", "n"]
 };
 
+let win;
+
 const boxXO = document.querySelectorAll(".grid__cnt");
 const toPlay = document.querySelectorAll(".pl__toplay__ic");
 const pl1Score = document.querySelector(".pl1__score");
 const pl2Score = document.querySelector(".pl2__score");
+
+let delay=0
+function showWinner(ID){
+    ID.forEach(id => {
+        setTimeout(() => {
+            document.querySelector(`.grid__cnt[data-no="${id}"]`).classList.add("glow");
+        }, delay);
+        delay += 20;
+    });
+    setTimeout(endGame, 1500);
+}
 
 function resetAll(){
     val = "X";
@@ -27,6 +40,7 @@ function resetGrid(){
     boxXO.forEach(box => {
         box.innerText = "";
         box.classList.remove("grid__clicked");
+        box.classList.remove("glow");
     });
 }
 
@@ -48,8 +62,9 @@ function updateXO(pos, no){
 }
 
 function checkEach(){
-    if(checkCurrent(xo, val)){
-        endGame();
+    let wonID = checkCurrent(xo, val)
+    if(wonID){
+        showWinner(wonID)
         return;
     }
     if(cnt==9){
