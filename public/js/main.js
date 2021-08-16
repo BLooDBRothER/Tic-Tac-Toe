@@ -218,19 +218,40 @@ async function updateStatus(){
 
 async function activateOpp(){
   await updateStatus();
+  console.log(status, curr)
   if(! status) return;
-  console.log(status)
-  if(status.p1[0] === "inactive" || status.p2[0] === "inactive") return;
-  console.log(status);
-  plName[0].innerText = status.p1[3]; 
-  plName[1].innerText = status.p2[3];
-  plProf[0].src = status.p1[2]; 
-  plProf[1].src = status.p2[2]; 
-  console.log(status);
+  console.log(curr)
+  // if( (curr === "X" && status.p2[0] === "inactive") || (curr === "O" && status.p1[0] === "inactive") ) return;
+  if(curr === "X"){
+    console.log(status.p2[0]);
+    if(status.p2[0] === "active"){
+      plName[0].innerText = status.p1[3]; 
+    plName[1].innerText = status.p2[3];
+    plProf[0].src = status.p1[2]; 
+    plProf[1].src = status.p2[2]; 
+    }
+  }
+  if(curr === "O"){
+    console.log(status.p1[0]);
+    if(status.p1[0] === "active"){
+      plName[0].innerText = status.p1[3]; 
+    plName[1].innerText = status.p2[3];
+    plProf[0].src = status.p1[2]; 
+    plProf[1].src = status.p2[2]; 
+    }
+  }
+  // if(status.p1[0] === "inactive" || status.p2[0] === "inactive") return;
+  // console.log("ins");
+  // plName[0].innerText = status.p1[3]; 
+  // plName[1].innerText = status.p2[3];
+  // plProf[0].src = status.p1[2]; 
+  // plProf[1].src = status.p2[2]; 
+  // console.log(status);
 }
 
 //firebase add event listener
 async function dbListener(reference, cback){
+  console.log(reference);
   let dbRef = db.ref(reference);
   dbRef.on("value", cback);
 }
@@ -259,12 +280,13 @@ joinRoom.addEventListener("keypress", async (e) => {
   curr = "O";
   let conn = `connection/${e.target.value}`;
   let roomVal = await roomPresent(conn);
-  console.log(roomVal);
   if(!roomVal) return;
+  rno = e.target.value;
   roomVal.p2[0] = "active";
   roomVal.p2[1] = user.uid;
   roomVal.p2[2] = user.photoURL;
   roomVal.p2[3] = user.displayName;
+  console.log(roomVal);
   dbPush(db, conn, roomVal);
   dbListener(conn, activateOpp);
 })
