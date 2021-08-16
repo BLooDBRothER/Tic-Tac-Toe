@@ -139,10 +139,9 @@ function fillUser(user) {
 
 async function signInUtil() {
   const provider = new firebase.auth.GoogleAuthProvider();
-  try{
+  try {
     user = await signIn(auth, provider);
-  }
-  catch(e){
+  } catch (e) {
     console.log(e.message);
   }
 }
@@ -162,6 +161,8 @@ function connectionUtil() {
   let val = {
     p1: ["active", uid, user.photoURL, user.displayName],
     p2: ["inactive", "null", "null", "null"],
+    currStatus: "open",
+    host: uid
   };
 
   updateUserRoom(no);
@@ -173,23 +174,23 @@ function connectionUtil() {
   curr = "X";
 }
 
-function updateUserRoom(no){
+function updateUserRoom(no) {
   let conn = `roomlink/${user.uid}`;
   let val = {
-    rid: no
+    rid: no,
   };
-  console.log(no)
+  console.log(no);
   dbPush(db, conn, val);
 }
 
-function deleteRoom(){
-  if(!userHasRoom) return;
+function deleteRoom() {
+  if (!userHasRoom) return;
   let conn = `connection/${userHasRoom.rid}`;
 
   dbDel(db, conn);
 }
 
-async function checkUserRoom(){
+async function checkUserRoom() {
   let conn = `roomlink/${user.uid}`;
   let inComming = await dbRead(db, conn);
   userHasRoom = inComming.val();
@@ -210,47 +211,48 @@ firebase.auth().onAuthStateChanged((insuser) => {
 });
 
 let status;
-async function updateStatus(){
+async function updateStatus() {
   let conn = `connection/${rno}`;
   let inComming = await dbRead(db, conn);
   status = inComming.val();
 }
 
-async function activateOpp(){
+async function activateOpp() {
   await updateStatus();
-  console.log(status, curr)
-  if(! status) return;
-  console.log(curr)
-  // if( (curr === "X" && status.p2[0] === "inactive") || (curr === "O" && status.p1[0] === "inactive") ) return;
-  if(curr === "X"){
-    console.log(status.p2[0]);
-    if(status.p2[0] === "active"){
-      plName[0].innerText = status.p1[3]; 
-    plName[1].innerText = status.p2[3];
-    plProf[0].src = status.p1[2]; 
-    plProf[1].src = status.p2[2]; 
-    }
-  }
-  if(curr === "O"){
-    console.log(status.p1[0]);
-    if(status.p1[0] === "active"){
-      plName[0].innerText = status.p1[3]; 
-    plName[1].innerText = status.p2[3];
-    plProf[0].src = status.p1[2]; 
-    plProf[1].src = status.p2[2]; 
-    }
-  }
+  console.log(status, curr);
+  if (!status) return;
+  console.log(curr);
+  if ((status.p2[0] === "inactive") || (status.p1[0] === "inactive")) return;
+  plName[0].innerText = status.p1[3];
+  plName[1].innerText = status.p2[3];
+  plProf[0].src = status.p1[2];
+  plProf[1].src = status.p2[2];
+  // if(curr === "X"){
+  //   console.log(status.p2[0]);
+  //   if(status.p2[0] === "active"){
+
+  //   }
+  // }
+  // if(curr === "O"){
+  //   console.log(status.p1[0]);
+  //   if(status.p1[0] === "active"){
+  //     plName[0].innerText = status.p1[3];
+  //   plName[1].innerText = status.p2[3];
+  //   plProf[0].src = status.p1[2];
+  //   plProf[1].src = status.p2[2];
+  //   }
+  // }
   // if(status.p1[0] === "inactive" || status.p2[0] === "inactive") return;
   // console.log("ins");
-  // plName[0].innerText = status.p1[3]; 
+  // plName[0].innerText = status.p1[3];
   // plName[1].innerText = status.p2[3];
-  // plProf[0].src = status.p1[2]; 
-  // plProf[1].src = status.p2[2]; 
+  // plProf[0].src = status.p1[2];
+  // plProf[1].src = status.p2[2];
   // console.log(status);
 }
 
 //firebase add event listener
-async function dbListener(reference, cback){
+async function dbListener(reference, cback) {
   console.log(reference);
   let dbRef = db.ref(reference);
   dbRef.on("value", cback);
@@ -270,27 +272,27 @@ boxXO.forEach((box) => {
 createRoom.addEventListener("click", connectionUtil);
 
 // function Room Present
-async function roomPresent(conn){
+async function roomPresent(conn) {
   let inComming = await dbRead(db, conn);
   return inComming.val();
 }
 
 joinRoom.addEventListener("keypress", async (e) => {
-  if(e.key != "Enter") return;
+  if (e.key != "Enter") return;
   curr = "O";
   let conn = `connection/${e.target.value}`;
   let roomVal = await roomPresent(conn);
-  if(!roomVal) return;
+  if (!roomVal || roomVal.currStatus === "close") return;
+  console.log(roomVal);
   rno = e.target.value;
   roomVal.p2[0] = "active";
   roomVal.p2[1] = user.uid;
   roomVal.p2[2] = user.photoURL;
   roomVal.p2[3] = user.displayName;
-  console.log(roomVal);
+  roomVal.currStatus = "close";
   dbPush(db, conn, roomVal);
   dbListener(conn, activateOpp);
-})
-
+});
 
 // window.addEventListener("load", (e) => {
 
