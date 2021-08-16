@@ -114,7 +114,7 @@ function checkEach() {
     showDraw();
     return;
   }
-  val = val == "X" ? "o" : "X";
+  val = val == "X" ? "O" : "X";
   toggleToPlay();
 }
 
@@ -217,6 +217,7 @@ async function updateStatus() {
   status = inComming.val();
 }
 
+
 async function activateOpp() {
   await updateStatus();
   console.log(status, curr);
@@ -227,28 +228,9 @@ async function activateOpp() {
   plName[1].innerText = status.p2[3];
   plProf[0].src = status.p1[2];
   plProf[1].src = status.p2[2];
-  // if(curr === "X"){
-  //   console.log(status.p2[0]);
-  //   if(status.p2[0] === "active"){
-
-  //   }
-  // }
-  // if(curr === "O"){
-  //   console.log(status.p1[0]);
-  //   if(status.p1[0] === "active"){
-  //     plName[0].innerText = status.p1[3];
-  //   plName[1].innerText = status.p2[3];
-  //   plProf[0].src = status.p1[2];
-  //   plProf[1].src = status.p2[2];
-  //   }
-  // }
-  // if(status.p1[0] === "inactive" || status.p2[0] === "inactive") return;
-  // console.log("ins");
-  // plName[0].innerText = status.p1[3];
-  // plName[1].innerText = status.p2[3];
-  // plProf[0].src = status.p1[2];
-  // plProf[1].src = status.p2[2];
-  // console.log(status);
+  let readRef = `move/${rno}`;
+  dbPush(db, readRef, {currMove: -1});
+  dbListener(readRef, updateClickEvent);
 }
 
 //firebase add event listener
@@ -258,14 +240,28 @@ async function dbListener(reference, cback) {
   dbRef.on("value", cback);
 }
 
+// function 
+
+function updateClickEvent(snapshot){
+  let val = snapshot.val().currMove;
+  console.log(val);
+  if(val == -1) return;
+  console.log(boxXO[val]);
+  displayXO(boxXO[val]);
+}
+
 loginBtn.addEventListener("click", signInUtil);
 loginImg.addEventListener("click", signOutUtil);
 
 boxXO.forEach((box) => {
   box.addEventListener("click", function () {
-    if (this.classList.contains("grid__clicked")) return;
+    console.log(curr, val)
+    if (curr != val || this.classList.contains("grid__clicked")) return;
 
-    displayXO(this);
+    let readRef = `move/${rno}`;
+    let move = {currMove: this.dataset.no};
+    dbPush(db, readRef, move);
+    // displayXO(this);
   });
 });
 
