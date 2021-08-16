@@ -53,11 +53,12 @@ header{
 }
 
 .login__profile{
-    width: 36px;
-    height: 36px;
+    width: 46px;
+    height: 46px;
     background-color: var(--secondary);
     border-radius: 50%;
     margin-bottom: .5rem;
+    cursor: pointer;
 }
 
 .login__detail{
