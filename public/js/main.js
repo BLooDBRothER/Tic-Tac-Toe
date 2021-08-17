@@ -300,9 +300,11 @@ window.addEventListener("online", (e) => {
 });
 
 window.addEventListener("offline", (e) => {
+  console.log("start");
   var presenceRef = firebase.database().ref("disconnectmessage");
   // Write a string when this client loses connection
   presenceRef.onDisconnect().set("I disconnected!");
+  console.log("end");
 });
 
 
