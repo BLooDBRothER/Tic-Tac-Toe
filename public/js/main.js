@@ -162,7 +162,8 @@ function connectionUtil() {
     p1: ["active", uid, user.photoURL, user.displayName],
     p2: ["inactive", "null", "null", "null"],
     currStatus: "open",
-    host: uid
+    host: uid,
+    join: "null"
   };
 
   updateUserRoom(no);
@@ -184,9 +185,12 @@ function updateUserRoom(no) {
 }
 
 function deleteRoom() {
+  console.log("done")
   if (!userHasRoom) return;
   let conn = `connection/${userHasRoom.rid}`;
-
+  let readRef = `move/${userHasRoom.rid}`;
+  console.log("hello");
+  dbDel(db, readRef);
   dbDel(db, conn);
 }
 
@@ -285,10 +289,15 @@ joinRoom.addEventListener("keypress", async (e) => {
   roomVal.p2[1] = user.uid;
   roomVal.p2[2] = user.photoURL;
   roomVal.p2[3] = user.displayName;
+  roomVal.join = user.uid;
   roomVal.currStatus = "close";
   dbPush(db, conn, roomVal);
   dbListener(conn, activateOpp);
 });
+
+var presenceRef = firebase.database().ref("disconnectmessage");
+// Write a string when this client loses connection
+presenceRef.onDisconnect().set("I disconnected!");
 
 // window.addEventListener("load", (e) => {
 
