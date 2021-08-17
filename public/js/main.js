@@ -295,9 +295,17 @@ joinRoom.addEventListener("keypress", async (e) => {
   dbListener(conn, activateOpp);
 });
 
-var presenceRef = firebase.database().ref("disconnectmessage");
-// Write a string when this client loses connection
-presenceRef.onDisconnect().set("I disconnected!");
+window.addEventListener("online", (e) => {
+  console.log("online");
+});
+
+window.addEventListener("offline", (e) => {
+  console.log("offline");
+});
+
+// var presenceRef = firebase.database().ref("disconnectmessage");
+// // Write a string when this client loses connection
+// presenceRef.onDisconnect().set("I disconnected!");
 
 // window.addEventListener("load", (e) => {
 
