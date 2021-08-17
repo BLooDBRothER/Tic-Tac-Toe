@@ -17,7 +17,7 @@ let user;
 const auth = firebase.auth();
 const db = firebase.database();
 
-let curr, userHasRoom, rno;
+let curr=null, userHasRoom, rno;
 let val = "X",
   cnt = 0;
 let xo = {
@@ -259,7 +259,10 @@ loginImg.addEventListener("click", signOutUtil);
 
 boxXO.forEach((box) => {
   box.addEventListener("click", function () {
-    console.log(curr, val)
+    console.log(curr, val);
+    if(curr == null){
+      displayXO(this);
+    }
     if (curr != val || this.classList.contains("grid__clicked")) return;
 
     let readRef = `move/${rno}`;
