@@ -26,7 +26,7 @@ let xo = {
   bot: ["n", "n", "n"],
 };
 
-let win;
+let win, type;
 
 let logout;
 const loginBtn = document.querySelector(".login__btn");
@@ -43,6 +43,8 @@ const createRoom = document.querySelector(".activate__create");
 const dispID = document.querySelector(".activate__id");
 const joinRoom = document.querySelector(".activate__join__input");
 const joinRoomIc = document.querySelector(".activate__enter__ic");
+const exit = document.querySelector(".exit__btn");
+const toHide = document.querySelectorAll(".to_hide")
 
 let delay = 0;
 function showWinner(ID) {
@@ -156,6 +158,7 @@ function displayID(no) {
 function connectionUtil() {
   if (!user) return;
 
+  type = "host";
   let no = rand();
   rno = no;
   let uid = user.uid;
@@ -208,8 +211,6 @@ firebase.auth().onAuthStateChanged((insuser) => {
     user = insuser;
     fillUser(insuser);
     checkUserRoom();
-    var presenceRef = firebase.database().ref(`${user.uid}/disconnectmessage`);
-    presenceRef.onDisconnect().set("I disconnected!");
   } else {
     loginBtn.classList.remove("none");
     loginDet.classList.add("none");
@@ -224,7 +225,6 @@ async function updateStatus() {
   status = inComming.val();
 }
 
-
 async function activateOpp() {
   await updateStatus();
   console.log(status, curr);
@@ -238,6 +238,10 @@ async function activateOpp() {
   let readRef = `move/${rno}`;
   dbPush(db, readRef, {currMove: -1});
   dbListener(readRef, updateClickEvent);
+  toHide.forEach(hide => {
+    hide.classList.add("none");
+  });
+  exit.classList.remove("none");
 }
 
 //firebase add event listener
@@ -248,7 +252,6 @@ async function dbListener(reference, cback) {
 }
 
 // function 
-
 function updateClickEvent(snapshot){
   let val = snapshot.val().currMove;
   console.log(val);
@@ -292,8 +295,9 @@ async function enterRoom(){
     }, 1000)
     return
   }
+  type = "join";
   curr = "O";
-  rno = e.target.value;
+  rno = joinRoom.value;
   roomVal.p2[0] = "active";
   roomVal.p2[1] = user.uid;
   roomVal.p2[2] = user.photoURL;
@@ -311,3 +315,28 @@ joinRoom.addEventListener("keypress", async (e) => {
 });
 
 joinRoomIc.addEventListener("click", enterRoom);
+
+exit.addEventListener("click", () =>{
+  toHide.forEach(hide => {
+    hide.classList.remove("none");
+  });
+  exit.classList.add("none");
+  createRoom.classList.remove("none");
+  dispID.classList.add("none");
+  dispID.innerText = "";
+  let conns = [`connection/${rno}`, `move/${rno}`];
+  conns.forEach(conn => {
+    db.ref(conn).off();
+    if(type === "host"){
+      dbDel(db, conn);
+    }  
+  });
+  plName[0].innerText = "Player 1";
+  plName[1].innerText = "Player 2";
+  plProf[0].src = "./Assests/user.svg";
+  plProf[1].src = "./Assests/user.svg";
+  toPlay[0].classList.remove("none");
+  toPlay[1].classList.add("none");
+  curr = type = "na";
+  resetAll();
+});
