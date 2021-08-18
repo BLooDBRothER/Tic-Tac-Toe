@@ -42,6 +42,7 @@ const plProf = document.querySelectorAll(".pl__prof");
 const createRoom = document.querySelector(".activate__create");
 const dispID = document.querySelector(".activate__id");
 const joinRoom = document.querySelector(".activate__join__input");
+const joinRoomIc = document.querySelector(".activate__enter__ic");
 
 let delay = 0;
 function showWinner(ID) {
@@ -207,6 +208,8 @@ firebase.auth().onAuthStateChanged((insuser) => {
     user = insuser;
     fillUser(insuser);
     checkUserRoom();
+    var presenceRef = firebase.database().ref(`${user.uid}/disconnectmessage`);
+    presenceRef.onDisconnect().set("I disconnected!");
   } else {
     loginBtn.classList.remove("none");
     loginDet.classList.add("none");
@@ -268,7 +271,6 @@ boxXO.forEach((box) => {
     let readRef = `move/${rno}`;
     let move = {currMove: this.dataset.no};
     dbPush(db, readRef, move);
-    // displayXO(this);
   });
 });
 
@@ -280,13 +282,17 @@ async function roomPresent(conn) {
   return inComming.val();
 }
 
-joinRoom.addEventListener("keypress", async (e) => {
-  if (e.key != "Enter") return;
-  curr = "O";
-  let conn = `connection/${e.target.value}`;
+async function enterRoom(){
+  let conn = `connection/${joinRoom.value}`;
   let roomVal = await roomPresent(conn);
-  if (!roomVal || roomVal.currStatus === "close") return;
-  console.log(roomVal);
+  if (!roomVal || roomVal.currStatus === "close") {
+    Err.innerText = "Invalid Room"
+    setTimeout(() => {
+      Err.innerText = ""
+    }, 1000)
+    return
+  }
+  curr = "O";
   rno = e.target.value;
   roomVal.p2[0] = "active";
   roomVal.p2[1] = user.uid;
@@ -296,18 +302,12 @@ joinRoom.addEventListener("keypress", async (e) => {
   roomVal.currStatus = "close";
   dbPush(db, conn, roomVal);
   dbListener(conn, activateOpp);
+} 
+
+const Err = document.querySelector(".activate__join__err");
+joinRoom.addEventListener("keypress", async (e) => {
+  if (e.key != "Enter") return;
+  enterRoom();
 });
 
-window.addEventListener("online", (e) => {
-  console.log("online");
-});
-
-window.addEventListener("offline", (e) => {
-  console.log("start");
-  var presenceRef = firebase.database().ref("disconnectmessage");
-  // Write a string when this client loses connection
-  presenceRef.onDisconnect().set("I disconnected!");
-  console.log("end");
-});
-
-
+joinRoomIc.addEventListener("click", enterRoom);

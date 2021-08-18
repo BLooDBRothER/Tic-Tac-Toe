@@ -118,6 +118,17 @@ header h1{
     box-sizing: unset;
 }
 
+.activate__enter__ic{
+    height: 40px;
+    width: 40px;
+    margin-left: .5rem;
+    cursor: pointer;
+}
+
+.activate__enter__ic:hover{
+    color: var(--secondary);
+}
+
 .activate__or{
     height: 30px;
     margin: 0 .5rem;
@@ -125,6 +136,15 @@ header h1{
 
 .activate__or__ic{
     transform: rotateZ(90deg);
+}
+
+.activate__join{
+    display: flex;
+    align-items: center;
+}
+
+.activate__join__input__cnt{
+    position: relative;
 }
 
 .activate__join__input{
@@ -146,6 +166,17 @@ header h1{
     outline: none;
     border-color: var(--primary);
     color: var(--secondary);
+}
+
+.activate__join__err{
+    position: absolute;
+    text-align: center;
+    top: 110%;
+    /* left: 50%; */
+    width: 100%;
+    padding: 0 0 0 1.3rem;
+    /* transform: translateX(-50%); */
+    white-space: nowrap;
 }
 
 main{
@@ -214,7 +245,7 @@ main{
 .pl__prof{
     width: 50px;
     height: 50px;
-    background-color: var(--primary);
+    /* background-color: var(--primary); */
     border-radius: 50%;
 }
 
