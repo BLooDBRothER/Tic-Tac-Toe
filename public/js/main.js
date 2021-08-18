@@ -184,16 +184,13 @@ function updateUserRoom(no) {
   let val = {
     rid: no,
   };
-  console.log(no);
   dbPush(db, conn, val);
 }
 
 function deleteRoom() {
-  console.log("done")
   if (!userHasRoom) return;
   let conn = `connection/${userHasRoom.rid}`;
   let readRef = `move/${userHasRoom.rid}`;
-  console.log("hello");
   dbDel(db, readRef);
   dbDel(db, conn);
 }
@@ -227,15 +224,14 @@ async function updateStatus() {
 
 async function activateOpp() {
   await updateStatus();
-  console.log(status, curr);
   if (!status) return;
-  console.log(curr);
   if ((status.p2[0] === "inactive") || (status.p1[0] === "inactive")) return;
   plName[0].innerText = status.p1[3];
   plName[1].innerText = status.p2[3];
   plProf[0].src = status.p1[2];
   plProf[1].src = status.p2[2];
   let readRef = `move/${rno}`;
+  resetAll();
   dbPush(db, readRef, {currMove: -1});
   dbListener(readRef, updateClickEvent);
   toHide.forEach(hide => {
@@ -246,17 +242,15 @@ async function activateOpp() {
 
 //firebase add event listener
 async function dbListener(reference, cback) {
-  console.log(reference);
   let dbRef = db.ref(reference);
   dbRef.on("value", cback);
 }
 
 // function 
 function updateClickEvent(snapshot){
+  if(!snapshot.val()) return;
   let val = snapshot.val().currMove;
-  console.log(val);
   if(val == -1) return;
-  console.log(boxXO[val]);
   displayXO(boxXO[val]);
 }
 
@@ -265,7 +259,6 @@ loginImg.addEventListener("click", signOutUtil);
 
 boxXO.forEach((box) => {
   box.addEventListener("click", function () {
-    console.log(curr, val);
     if(curr === "na"){
       displayXO(this);
     }
@@ -304,6 +297,7 @@ async function enterRoom(){
   roomVal.p2[3] = user.displayName;
   roomVal.join = user.uid;
   roomVal.currStatus = "close";
+  pl1Score.innerText = pl2Score.innerText = "0";
   dbPush(db, conn, roomVal);
   dbListener(conn, activateOpp);
 } 
@@ -338,5 +332,6 @@ exit.addEventListener("click", () =>{
   toPlay[0].classList.remove("none");
   toPlay[1].classList.add("none");
   curr = type = "na";
+  pl1Score.innerText = pl2Score.innerText = "0";
   resetAll();
 });
