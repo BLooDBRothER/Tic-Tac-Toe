@@ -23,6 +23,10 @@ export async function dbPush(db, reference, val){
     db.ref(reference).set(val);
 }
 
+export async function dbUpdate(db, reference, val){
+    db.ref(reference).update(val);
+}
+
 export async function dbRead(db, reference){
     let check = await db.ref(reference).get();
     return check;

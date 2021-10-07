@@ -34,5 +34,5 @@ export function checkCurrent(xo, val) {
 
 
 export function rand(){
-    return Math.floor(Math.random() * (99999 - 10000) + 10000);
+    return Math.floor(Math.random() * (9999999 - 1000000) + 1000000);
 } 

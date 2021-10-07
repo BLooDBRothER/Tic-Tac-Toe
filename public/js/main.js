@@ -5,6 +5,7 @@ import {
   dbPush,
   dbRead,
   dbDel,
+  dbUpdate,
 } from "../modules/firebase.js";
 import { checkCurrent, rand } from "../modules/util.js";
 
@@ -17,16 +18,17 @@ let user;
 const auth = firebase.auth();
 const db = firebase.database();
 
-let curr="na", userHasRoom, rno;
+let curr="na", userHasRoom, rno=null;
 let val = "X",
-  cnt = 0;
+  cnt = 0,
+  isEnd = false;
 let xo = {
   top: ["n", "n", "n"],
   mid: ["n", "n", "n"],
   bot: ["n", "n", "n"],
 };
 
-let win, type;
+// let win, type;
 
 let logout;
 const loginBtn = document.querySelector(".login__btn");
@@ -77,6 +79,7 @@ function resetAll() {
     bot: ["n", "n", "n"],
   };
   delay = 0;
+  isEnd = false;
   resetGrid();
   toPlay[0].classList.remove("none");
   toPlay[1].classList.add("none");
@@ -108,8 +111,10 @@ function updateXO(pos, no) {
 }
 
 function checkEach() {
+  // console.log(curr);
   let wonID = checkCurrent(xo, val);
   if (wonID) {
+    isEnd = true;
     showWinner(wonID);
     return;
   }
@@ -145,7 +150,7 @@ async function signInUtil() {
   try {
     user = await signIn(auth, provider);
   } catch (e) {
-    console.log(e.message);
+    // console.log(e.message);
   }
 }
 
@@ -155,12 +160,17 @@ function displayID(no) {
   dispID.innerText = no;
 }
 
-function connectionUtil() {
+let localRoomValue;
+async function connectionUtil() {
   if (!user) return;
 
-  type = "host";
+  // type = "host";
+  // console.log("he");
+  await checkUserRoom();
+  // console.log("fi");
   let no = rand();
   rno = no;
+  localRoomValue = no;
   let uid = user.uid;
   let val = {
     p1: ["active", uid, user.photoURL, user.displayName],
@@ -177,6 +187,9 @@ function connectionUtil() {
   displayID(no);
   dbListener(conn, activateOpp);
   curr = "X";
+  setDBListener();
+  removeDBListener();
+  setUpDisconnect();
 }
 
 function updateUserRoom(no) {
@@ -191,14 +204,16 @@ function deleteRoom() {
   if (!userHasRoom) return;
   let conn = `connection/${userHasRoom.rid}`;
   let readRef = `move/${userHasRoom.rid}`;
-  dbDel(db, readRef);
+  // console.log(userHasRoom);
   dbDel(db, conn);
+  dbDel(db, readRef);
 }
 
 async function checkUserRoom() {
   let conn = `roomlink/${user.uid}`;
   let inComming = await dbRead(db, conn);
   userHasRoom = inComming.val();
+  // console.log(userHasRoom);
   deleteRoom();
 }
 
@@ -230,6 +245,7 @@ async function activateOpp() {
   plName[1].innerText = status.p2[3];
   plProf[0].src = status.p1[2];
   plProf[1].src = status.p2[2];
+  pl1Score.innerText = pl2Score.innerText = "0";
   let readRef = `move/${rno}`;
   resetAll();
   dbPush(db, readRef, {currMove: -1});
@@ -259,10 +275,13 @@ loginImg.addEventListener("click", signOutUtil);
 
 boxXO.forEach((box) => {
   box.addEventListener("click", function () {
+    // console.log(curr, val);
     if(curr === "na"){
+      if (this.classList.contains("grid__clicked") || isEnd) return;
       displayXO(this);
     }
-    if (curr != val || this.classList.contains("grid__clicked")) return;
+    if (curr != val || this.classList.contains("grid__clicked") || isEnd) return;
+    // console.log(curr, val);
 
     let readRef = `move/${rno}`;
     let move = {currMove: this.dataset.no};
@@ -281,14 +300,15 @@ async function roomPresent(conn) {
 async function enterRoom(){
   let conn = `connection/${joinRoom.value}`;
   let roomVal = await roomPresent(conn);
-  if (!roomVal || roomVal.currStatus === "close") {
+  // console.log(roomVal, roomVal.currStatus, localRoomValue, joinRoom.value);
+  if ((+joinRoom.value) === localRoomValue || !roomVal || roomVal.currStatus === "close") {
     Err.innerText = "Invalid Room"
     setTimeout(() => {
       Err.innerText = ""
     }, 1000)
     return
   }
-  type = "join";
+  // type = "join";
   curr = "O";
   rno = joinRoom.value;
   roomVal.p2[0] = "active";
@@ -300,6 +320,10 @@ async function enterRoom(){
   pl1Score.innerText = pl2Score.innerText = "0";
   dbPush(db, conn, roomVal);
   dbListener(conn, activateOpp);
+  // console.log("helo");
+  setDBListener();
+  removeDBListener();
+  setUpDisconnect();
 } 
 
 const Err = document.querySelector(".activate__join__err");
@@ -311,6 +335,69 @@ joinRoom.addEventListener("keypress", async (e) => {
 joinRoomIc.addEventListener("click", enterRoom);
 
 exit.addEventListener("click", () =>{
+  // console.log(rno);
+  dbUpdate(db, `connection/${rno}`, {currStatus: "delete"});
+  // let conns = [`connection/${rno}`, `move/${rno}`];
+  // conns.forEach(conn => {
+  //   db.ref(conn).off();
+  //   dbDel(db, conn);
+  // });
+});
+
+function setDBListener(){
+  // console.log(rno);
+  let conn = `connection/${rno}`;
+  // console.log("hleo");
+  db.ref(conn).on("child_changed", clearGame);
+  db.ref(conn).on("child_removed", clearGame);
+}
+
+function removeDBListener(){
+  let conn = `connection`
+  db.ref(conn).on("child_removed", clearGameUtil);
+}
+
+function clearGameUtil(data){
+  console.log(data.key, rno);
+  if(+rno === +data.key){
+    console.log("hello");
+    deleteTest();
+    console.log("hi")
+    toHide.forEach(hide => {
+      hide.classList.remove("none");
+    });
+    exit.classList.add("none");
+    createRoom.classList.remove("none");
+    dispID.classList.add("none");
+    dispID.innerText = "";
+    // console.log(plName);
+    plName[0].innerText = "Player 1";
+    plName[1].innerText = "Player 2";
+    plProf[0].src = "./Assests/user.svg";
+    plProf[1].src = "./Assests/user.svg";
+    toPlay[0].classList.remove("none");
+    toPlay[1].classList.add("none");
+    // curr = type = "na";
+    curr = "na";
+    pl1Score.innerText = pl2Score.innerText = "0";
+    resetAll();
+  }
+}
+
+function deleteTest(){
+  // console.log(rno);
+  let conn = `connection/${rno}`;
+  let readRef = `move/${rno}`;
+  dbDel(db, readRef);
+  dbDel(db, conn);
+}
+
+function clearGame(data){
+  // console.log("232")
+  if(data.val() !== "delete") return;
+  // console.log(data.val());
+  deleteTest();
+  // console.log("hi")
   toHide.forEach(hide => {
     hide.classList.remove("none");
   });
@@ -318,20 +405,24 @@ exit.addEventListener("click", () =>{
   createRoom.classList.remove("none");
   dispID.classList.add("none");
   dispID.innerText = "";
-  let conns = [`connection/${rno}`, `move/${rno}`];
-  conns.forEach(conn => {
-    db.ref(conn).off();
-    if(type === "host"){
-      dbDel(db, conn);
-    }  
-  });
+  // console.log(plName);
   plName[0].innerText = "Player 1";
   plName[1].innerText = "Player 2";
   plProf[0].src = "./Assests/user.svg";
   plProf[1].src = "./Assests/user.svg";
   toPlay[0].classList.remove("none");
   toPlay[1].classList.add("none");
-  curr = type = "na";
+  // curr = type = "na";
+  curr = "na";
   pl1Score.innerText = pl2Score.innerText = "0";
   resetAll();
-});
+}
+
+function setUpDisconnect(){
+  if(!rno) return;
+  // console.log("enabled");
+  const disconnectRef = db.ref(`connection/${rno}`);
+  const disconnectRef2 = db.ref(`move/${rno}`);
+  disconnectRef.onDisconnect().remove();
+  disconnectRef2.onDisconnect().remove();
+}
