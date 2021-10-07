@@ -31,7 +31,7 @@ header{
 }
 
 header h1{
-    font-size: clamp(1rem, 7vw, 2.5rem);
+    font-size: clamp(1rem, 7vw, 2rem);
 }
 
 .login{
@@ -180,7 +180,7 @@ header h1{
 }
 
 main{
-    padding: 2rem clamp(.5rem, 5vw, 2rem);
+    padding: 2rem clamp(.5rem, 5vw, 2rem) 1rem clamp(.5rem, 5vw, 2rem);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -209,8 +209,8 @@ main{
 }
 
 .grid__cnt{
-    width: clamp(50px, 15vw, 150px);
-    height: clamp(50px, 15vw, 150px);
+    width: clamp(50px, 13.5vw, 150px);
+    height: clamp(50px, 13.5vw, 150px);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -235,7 +235,7 @@ main{
 }
 
 .pl__name{
-    font-size: clamp(.8rem, 4vw, 1.4rem);
+    font-size: clamp(.8rem, 3vw, 1.4rem);
 }
 
 .pl__data{
@@ -312,6 +312,7 @@ footer{
 .footer__message{
     flex: 1;
     text-align: center;
+    font-size: clamp(1rem, 4vw, 2rem);
 }
 
 

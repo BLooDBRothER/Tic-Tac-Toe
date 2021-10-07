@@ -380,6 +380,7 @@ function clearGameUtil(data){
     // curr = type = "na";
     curr = "na";
     pl1Score.innerText = pl2Score.innerText = "0";
+    joinRoom.value = '';
     resetAll();
   }
 }
@@ -415,6 +416,7 @@ function clearGame(data){
   // curr = type = "na";
   curr = "na";
   pl1Score.innerText = pl2Score.innerText = "0";
+  joinRoom.value = '';
   resetAll();
 }
 
